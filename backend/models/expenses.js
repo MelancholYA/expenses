@@ -1,22 +1,29 @@
 const mongoose = require('mongoose');
 
-const expensesSchema = new mongoose.Schema([
-	{
-		description: {
-			type: String,
-			required: true,
+const expensesSchema = new mongoose.Schema(
+	[
+		{
+			description: {
+				type: String,
+				required: true,
+			},
+			user: {
+				type: mongoose.Types.ObjectId,
+				required: true,
+				ref: 'Users',
+			},
+			amount: {
+				type: Number,
+				required: true,
+			},
+			special: {
+				type: Boolean,
+				required: true,
+			},
 		},
-		amount: {
-			type: Number,
-			required: true,
-		},
-		date: {
-			type: String,
-			required: true,
-		},
-		special: Boolean,
-	},
-]);
+	],
+	{ timestamps: true },
+);
 
 const Expenses = mongoose.model('Expenses', expensesSchema);
 

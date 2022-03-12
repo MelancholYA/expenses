@@ -5,13 +5,14 @@ const Users = require('./models/users');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Expenses = require('./models/expenses');
+const moment = require('moment');
 
 const port = process.env.PORT || 5000;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const secret = process.env.JWT_SECRET;
+var secret = process.env.JWT_SECRET;
 
 const generateError = (message, status) => {
 	return {
@@ -19,8 +20,25 @@ const generateError = (message, status) => {
 		status,
 	};
 };
-const generateToken = (data) => {
-	return jwt.sign(data, secret);
+
+const checkToken = (token) => {
+	if (!token) {
+		return generateError('not authorized ,no token provided', 403);
+	} else {
+		try {
+			let isValidToken = jwt.verify(token, process.env.JWT_SECRET);
+			if (isValidToken) {
+				return {
+					valid: true,
+					payload: isValidToken,
+				};
+			} else {
+				return generateError('not authorized , invalid token', 403);
+			}
+		} catch (error) {
+			return generateError('not authorized , invalid signature', 403);
+		}
+	}
 };
 
 connectDB();
@@ -43,48 +61,93 @@ app.post('/api/auth', async (req, res) => {
 	if (!isValidPassword) {
 		return res.status(400).json(generateError('Wrong password', 400));
 	}
-	res.json({
-		token: generateToken({
-			userName: userData.userName,
-		}),
+
+	res.status(200).json({
+		token: jwt.sign(
+			{ userName: userData.userName, id: userData._id },
+			process.env.JWT_SECRET,
+		),
 	});
 });
 
 //Expenses Auth
 
-//get date related expenses
-
-//todo fix jwt.verify
-
-app.get('/api/:date', async (req, res) => {
+//get day related expenses
+app.get('/api/day/:date', async (req, res) => {
 	let token = req.headers['x-auth-token'];
+	let validToken = checkToken(token);
+	console.log({ validToken });
+	if (!validToken?.valid) {
+		return res.status(403).json(validToken);
+	}
+
 	let { date } = req.params;
-	if (!token) {
-		return res.status(403).json(generateError('no token provided', 403));
-	}
-	console.log({ secret });
-	let isValidToken = jwt.verify(token, secret);
-	console.log({ isValidToken });
-	if (!isValidToken) {
-		return res
-			.status(403)
-			.json(generateError('Not authorized , invalid token', 403));
-	}
 	if (!date) {
 		return res.status(400).json(generateError('No date was provided', 400));
 	}
-	let expenses = await Expenses.find({ date }).select('-_id -date');
+
+	let expenses = await Expenses.find({
+		createdAt: {
+			$lt: moment(date).endOf('day'),
+			$gt: moment(date).startOf('day'),
+		},
+		user: validToken.payload.id,
+	}).select('-_id -user -createdAt -updatedAt -__v');
 	res.json(expenses);
 });
+//get month related expenses
+//to do aggregation
+// app.get('/api/month/:date', async (req, res) => {
+// 	console.log('requested');
+// 	let token = req.headers['x-auth-token'];
+// 	let validToken = checkToken(token);
+// 	if (!validToken.valid) {
+// 		return res.status(403).json(validToken);
+// 	}
+
+// 	let { date } = req.params;
+// 	if (!date) {
+// 		return res.status(400).json(generateError('No date was provided', 400));
+// 	}
+
+// 	let expenses = await Expenses.aggregate([
+// 		{
+// 			$match: {
+// 				createdAt: {
+// 					$lt: moment(date).endOf('year'),
+// 					$gt: moment(date).startOf('year'),
+// 				},
+// 			},
+// 		},
+// 	]);
+// 	console.log({ expenses });
+// 	res.json(expenses);
+// });
+
 //add expenses
 app.post('/api', async (req, res) => {
 	let token = req.headers['x-auth-token'];
-	let { descrtion, date, amount } = req.body;
-	if (!token) {
-		return res.status(403).json(generateError('nno token provided', 403));
+	let { description, amount, special } = req.body;
+	let validToken = checkToken(token);
+	console.log({ validToken });
+	if (!validToken?.valid) {
+		return res.status(403).json(validToken.payload);
 	}
-
-	res.json(expenses);
+	if (!description || !amount) {
+		return res.status(400).json(generateError('Invalid data', 400));
+	}
+	try {
+		await Expenses.create({
+			description,
+			amount,
+			special: special ?? false,
+			user: validToken?.payload?.id,
+		});
+		return res.status(200).json({ description, amount });
+	} catch (error) {
+		console.log({ error });
+		return res.status(400).json(generateError(error, 400));
+	}
 });
 
 app.listen(port, () => {
