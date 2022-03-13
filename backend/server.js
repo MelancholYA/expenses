@@ -6,6 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Expenses = require('./models/expenses');
 const moment = require('moment');
+const { default: mongoose } = require('mongoose');
 
 const port = process.env.PORT || 5000;
 const app = express();
@@ -76,7 +77,6 @@ app.post('/api/auth', async (req, res) => {
 app.get('/api/day/:date', async (req, res) => {
 	let token = req.headers['x-auth-token'];
 	let validToken = checkToken(token);
-	console.log({ validToken });
 	if (!validToken?.valid) {
 		return res.status(403).json(validToken);
 	}
@@ -95,41 +95,44 @@ app.get('/api/day/:date', async (req, res) => {
 	}).select('-_id -user -createdAt -updatedAt -__v');
 	res.json(expenses);
 });
+
 //get month related expenses
-//to do aggregation
-// app.get('/api/month/:date', async (req, res) => {
-// 	console.log('requested');
-// 	let token = req.headers['x-auth-token'];
-// 	let validToken = checkToken(token);
-// 	if (!validToken.valid) {
-// 		return res.status(403).json(validToken);
-// 	}
+app.get('/api/month/:date', async (req, res) => {
+	let token = req.headers['x-auth-token'];
+	let validToken = checkToken(token);
+	if (!validToken.valid) {
+		return res.status(403).json(validToken);
+	}
 
-// 	let { date } = req.params;
-// 	if (!date) {
-// 		return res.status(400).json(generateError('No date was provided', 400));
-// 	}
-
-// 	let expenses = await Expenses.aggregate([
-// 		{
-// 			$match: {
-// 				createdAt: {
-// 					$lt: moment(date).endOf('year'),
-// 					$gt: moment(date).startOf('year'),
-// 				},
-// 			},
-// 		},
-// 	]);
-// 	console.log({ expenses });
-// 	res.json(expenses);
-// });
+	let { date } = req.params;
+	if (!date) {
+		return res.status(400).json(generateError('No date was provided', 400));
+	}
+	const expenses = await Expenses.aggregate([
+		{
+			$match: {
+				user: mongoose.Types.ObjectId(validToken.payload.id),
+				createdAt: {
+					$lt: moment(date).endOf('month').toDate(),
+					$gt: moment(date).startOf('month').toDate(),
+				},
+			},
+		},
+		{
+			$group: {
+				_id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+				amount: { $sum: '$amount' },
+			},
+		},
+	]);
+	res.json(expenses);
+});
 
 //add expenses
 app.post('/api', async (req, res) => {
 	let token = req.headers['x-auth-token'];
 	let { description, amount, special } = req.body;
 	let validToken = checkToken(token);
-	console.log({ validToken });
 	if (!validToken?.valid) {
 		return res.status(403).json(validToken.payload);
 	}
@@ -145,7 +148,6 @@ app.post('/api', async (req, res) => {
 		});
 		return res.status(200).json({ description, amount });
 	} catch (error) {
-		console.log({ error });
 		return res.status(400).json(generateError(error, 400));
 	}
 });
