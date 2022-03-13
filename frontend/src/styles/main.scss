@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik&display=swap');
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+$yellow: #fca311;
+$black: #14213d;
+
+body {
+	font-family: 'Rubik', sans-serif;
+}
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.screen {
+	width: 100vw;
+	min-height: 100vh;
+	background-color: $black;
+}
+.auth {
+	max-width: 400px;
+	width: 100%;
+	h2 {
+		color: $yellow;
+	}
+	input {
+		border: 0;
+		outline: 0;
+		padding: 9px 12px;
+		margin: 10px 0;
+		width: 100%;
+
+		border: 3px solid transparent;
+		transition: 0.3s;
+		&:focus {
+			border-bottom-color: $yellow;
+		}
+	}
+	button {
+		width: 100%;
+		border: 0;
+		padding: 7px;
+		background: $yellow;
+		color: $black;
+		margin: 10px 0;
+		box-shadow: 0 0 14px #000000;
+		transition: 0.3s;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		&:hover {
+			box-shadow: 0 5px 17px #383838;
+		}
+	}
+}
+
+.error {
+	margin: 10px 0;
+	background: #ffebf0;
+	display: flex;
+	padding: 7px;
+	color: #c30000;
+	align-items: center;
+	opacity: 0;
+	transform: translateY(-15px);
+	animation: fadeIn 0.7s forwards;
+	p {
+		margin-left: 7px;
+		font-weight: 700;
+	}
+	svg {
+		fill: none;
+		stroke: #c30000;
+	}
+}
+
+@keyframes fadeIn {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
