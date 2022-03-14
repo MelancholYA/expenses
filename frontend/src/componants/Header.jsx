@@ -7,7 +7,7 @@ const Header = () => {
 	return (
 		<header>
 			<h1>Monthly Expenses</h1>
-			<button>{moment(`${year}/${month}/${day}`).format('MMMM')}</button>
+			<button>{moment(`${year}-${month}-${day}`).format('MMMM')}</button>
 		</header>
 	);
 };

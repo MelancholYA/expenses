@@ -6,6 +6,7 @@
 }
 $yellow: #fca311;
 $black: #14213d;
+$greyWhite: #e5e5e5;
 
 body {
 	font-family: 'Rubik', sans-serif;
@@ -89,6 +90,37 @@ header {
 				width: 100%;
 			}
 		}
+	}
+}
+.list {
+	list-style: none;
+	margin-top: 25px;
+	.day {
+		overflow: hidden;
+		margin: 5px 0;
+		transition: 0.3s;
+		.dayHeader {
+			user-select: none;
+			padding: 12px;
+			background-color: $greyWhite;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			height: 50px;
+			cursor: pointer;
+		}
+	}
+}
+.subExpList {
+	background: #e5e5e547;
+	padding: 12px;
+	color: white;
+	li {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin: 5px 0;
+		min-height: 30px;
 	}
 }
 
