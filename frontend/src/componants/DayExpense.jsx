@@ -69,7 +69,7 @@ const DayExpense = ({ date, amount }) => {
 						request.totals.map((item, i) => (
 							<li>
 								<span>{item.description}</span>
-								<span>ghf</span>
+								<span>{item.amount}</span>
 							</li>
 						))
 					)}
