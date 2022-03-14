@@ -8,6 +8,8 @@
 
 body {
   font-family: 'Rubik', sans-serif;
+  background-color: #14213d;
+  padding: 25px;
 }
 
 .center {
@@ -84,6 +86,38 @@ body {
           box-shadow: 0 5px 17px #383838;
 }
 
+header h1 {
+  color: white;
+  margin-bottom: 15px;
+}
+
+header button {
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  cursor: pointer;
+  color: #fca311;
+  font-size: 18px;
+  font-weight: 700;
+  position: relative;
+}
+
+header button::before {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: 0;
+  height: 2px;
+  width: 0;
+  background-color: #fca311;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+header button:hover::before {
+  width: 100%;
+}
+
 .error {
   margin: 10px 0;
   background: #ffebf0;
@@ -110,6 +144,26 @@ body {
 .error svg {
   fill: none;
   stroke: #c30000;
+}
+
+@media (max-width: 450px) {
+  body {
+    padding: 15px;
+  }
+  header {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+  }
+  header h1 {
+    margin: 0;
+  }
 }
 
 @-webkit-keyframes fadeIn {

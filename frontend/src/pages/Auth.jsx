@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Auth = ({ setToken }) => {
 	const [userData, setUserData] = useState({
@@ -8,12 +8,11 @@ const Auth = ({ setToken }) => {
 	});
 	const [errors, setErrors] = useState([]);
 	const [loading, setLoading] = useState(false);
-	console.log(process.env.REACT_APP_BASE_URL);
+	const [isLogged, setIsLogged] = useState(false);
 	const login = async () => {
 		setErrors(null);
 		setLoading(true);
 		const url = process.env.REACT_APP_BASE_URL + '/auth';
-
 		if (!userData.userName) {
 			setErrors(["username can't be empty"]);
 			setLoading(false);
@@ -24,20 +23,29 @@ const Auth = ({ setToken }) => {
 			setLoading(false);
 			return;
 		}
-
 		await axios
 			.post(url, userData)
 			.then((res) => {
-				console.log(res);
 				localStorage.setItem('exp-token', res.data.token);
-				setToken(res);
+
+				setIsLogged({ isLogged: true, token: res });
+				return;
 			})
 			.catch((err) => {
 				setErrors([err.response ? err.response.data.message : err.message]);
-				console.log(err.response);
 			});
 		setLoading(false);
 	};
+
+	useEffect(() => {
+		if (isLogged.isLogged) {
+			setToken(isLogged.token);
+		}
+		return () => {
+			setIsLogged(false);
+		};
+	}, [isLogged, setToken]);
+
 	return (
 		<div className='center screen'>
 			<div className=' auth'>

@@ -9,6 +9,8 @@ $black: #14213d;
 
 body {
 	font-family: 'Rubik', sans-serif;
+	background-color: $black;
+	padding: 25px;
 }
 .center {
 	display: flex;
@@ -58,6 +60,37 @@ body {
 		}
 	}
 }
+header {
+	h1 {
+		color: white;
+		margin-bottom: 15px;
+	}
+	button {
+		border: 0;
+		outline: 0;
+		background-color: transparent;
+		cursor: pointer;
+		color: $yellow;
+		font-size: 18px;
+		font-weight: 700;
+		position: relative;
+		&::before {
+			position: absolute;
+			content: '';
+			bottom: -3px;
+			left: 0;
+			height: 2px;
+			width: 0;
+			background-color: $yellow;
+			transition: 0.3s;
+		}
+		&:hover {
+			&::before {
+				width: 100%;
+			}
+		}
+	}
+}
 
 .error {
 	margin: 10px 0;
@@ -76,6 +109,20 @@ body {
 	svg {
 		fill: none;
 		stroke: #c30000;
+	}
+}
+
+@media (max-width: 450px) {
+	body {
+		padding: 15px;
+	}
+	header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		h1 {
+			margin: 0;
+		}
 	}
 }
 
