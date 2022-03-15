@@ -2,6 +2,7 @@ import DayExpense from './DayExpense';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import AddExpense from './AddExpense';
 
 const DaysList = () => {
 	const { year, month, day } = useSelector((state) => state.date);
@@ -60,11 +61,23 @@ const DaysList = () => {
 				</li>
 			) : request.error ? (
 				<li className='error'>{request.error}</li>
+			) : request.totals.length === 0 ? (
+				<li className='day'>
+					<header className={'dayHeader'}>
+						<span>No Data</span>
+					</header>
+				</li>
 			) : (
 				request.totals.map((item) => (
-					<DayExpense key={item._id} date={item._id} amount={item.amount} />
+					<DayExpense
+						key={item._id}
+						date={item._id}
+						setRequest={setRequest}
+						amount={item.amount}
+					/>
 				))
 			)}
+			{!request.loading && !request.error && <AddExpense />}
 		</ul>
 	);
 };

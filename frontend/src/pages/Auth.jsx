@@ -48,7 +48,7 @@ const Auth = ({ setToken }) => {
 
 	return (
 		<div className='center screen'>
-			<div className=' auth'>
+			<div className='auth'>
 				<h2 style={{ textAlign: 'center', marginBottom: 25 }}>Welcome Back</h2>
 				<input
 					type='text'

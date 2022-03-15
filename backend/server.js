@@ -95,6 +95,7 @@ app.get('/api/day/:date', async (req, res) => {
 		},
 		user: validToken.payload.id,
 	}).select('-_id -user -createdAt -updatedAt -__v');
+	console.log(expenses);
 	res.json(expenses);
 });
 
@@ -136,7 +137,8 @@ app.post('/api', async (req, res) => {
 	let { description, amount, special } = req.body;
 	let validToken = checkToken(token);
 	if (!validToken?.valid) {
-		return res.status(403).json(validToken.payload);
+		console.log(validToken);
+		return res.status(403).json(validToken);
 	}
 	if (!description || !amount) {
 		return res.status(400).json(generateError('Invalid data', 400));

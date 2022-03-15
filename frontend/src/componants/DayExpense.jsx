@@ -17,14 +17,15 @@ const DayExpense = ({ date, amount }) => {
 				'x-auth-token': localStorage.getItem('exp-token'),
 			},
 		})
-			.then((res) =>
+			.then((res) => {
+				console.log(res);
 				setRequest((prev) => ({
 					...prev,
 					loading: false,
 					error: null,
 					totals: res.data,
-				})),
-			)
+				}));
+			})
 			.catch((err) =>
 				setRequest((prev) => ({
 					...prev,
@@ -47,34 +48,39 @@ const DayExpense = ({ date, amount }) => {
 					setExpend(!expend);
 					(request.loading || request.error) && getTotals();
 				}}>
-				<span>{moment(date).format('dddd Do')}</span>
-				<span>{amount}</span>
+				<span>
+					{moment(date).isSame(moment(), 'day')
+						? 'Today'
+						: moment(date).format('dddd Do')}
+				</span>
+				<span>{amount} DA</span>
 			</header>
-			{expend && (
-				<ul className='subExpList'>
-					{request.loading ? (
-						<li>
-							<span> Loding...</span>
-							<span>
-								<img
-									src={require('../assets/bars.svg').default}
-									width='25px'
-									alt='loader'
-								/>
-							</span>
-						</li>
-					) : request.error ? (
-						<li className='error'>{request.error}</li>
-					) : (
-						request.totals.map((item, i) => (
-							<li>
+
+			<ul className='subExpList'>
+				{request.loading ? (
+					<li>
+						<span> Loding...</span>
+						<span>
+							<img
+								src={require('../assets/bars.svg').default}
+								width='25px'
+								alt='loader'
+							/>
+						</span>
+					</li>
+				) : request.error ? (
+					<li className='error'>{request.error}</li>
+				) : (
+					<>
+						{request.totals.map((item, i) => (
+							<li key={i}>
 								<span>{item.description}</span>
-								<span>{item.amount}</span>
+								<span>{item.amount} DA</span>
 							</li>
-						))
-					)}
-				</ul>
-			)}
+						))}
+					</>
+				)}
+			</ul>
 		</li>
 	);
 };
