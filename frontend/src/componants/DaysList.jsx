@@ -44,7 +44,6 @@ const DaysList = () => {
 		};
 		getTotals();
 	}, [year, month, day, dispatch]);
-	console.log(request);
 	return (
 		<ul className='list'>
 			{request.loading ? (

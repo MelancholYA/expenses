@@ -39,7 +39,6 @@ const AddExpense = () => {
 			});
 		setLoading(false);
 	};
-	console.log(error);
 	return (
 		<div style={{ background: '#ffffff21', padding: '12px', color: 'white' }}>
 			<h3>ADD NEW</h3>
