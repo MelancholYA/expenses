@@ -20,8 +20,8 @@ body {
 	flex-direction: column;
 }
 .screen {
-	width: 100vw;
-	min-height: 100vh;
+	width: 100%;
+	min-height: calc(100vh - 50px);
 	background-color: $black;
 }
 .auth {
