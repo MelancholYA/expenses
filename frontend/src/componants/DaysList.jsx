@@ -1,18 +1,20 @@
 import DayExpense from './DayExpense';
 import axios from 'axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import AddExpense from './AddExpense';
+import { setTotals } from '../redux/expensesSlice';
+import moment from 'moment';
 
 const DaysList = () => {
 	const { year, month, day } = useSelector((state) => state.date);
+	const { totals } = useSelector((state) => state.expense);
+	const dispatch = useDispatch();
 
 	const [request, setRequest] = useState({
 		loading: true,
 		error: null,
-		totals: [],
 	});
-
 	useEffect(() => {
 		const getTotals = async () => {
 			setRequest((prev) => ({ ...prev, loading: true }));
@@ -24,25 +26,24 @@ const DaysList = () => {
 					},
 				},
 			)
-				.then((res) =>
+				.then((res) => {
 					setRequest((prev) => ({
 						...prev,
 						loading: false,
 						error: null,
-						totals: res.data,
-					})),
-				)
+					}));
+					dispatch(setTotals(res.data));
+				})
 				.catch((err) =>
 					setRequest((prev) => ({
 						...prev,
 						loading: false,
 						error: err.response ? err.response.data.message : err.message,
-						totals: [],
 					})),
 				);
 		};
 		getTotals();
-	}, [year, month, day]);
+	}, [year, month, day, dispatch]);
 	console.log(request);
 	return (
 		<ul className='list'>
@@ -61,23 +62,25 @@ const DaysList = () => {
 				</li>
 			) : request.error ? (
 				<li className='error'>{request.error}</li>
-			) : request.totals.length === 0 ? (
+			) : totals.length === 0 ? (
 				<li className='day'>
 					<header className={'dayHeader'}>
 						<span>No Data</span>
 					</header>
 				</li>
 			) : (
-				request.totals.map((item) => (
+				totals.map((item) => (
 					<DayExpense
 						key={item._id}
 						date={item._id}
-						setRequest={setRequest}
+						manipulate={setRequest}
 						amount={item.amount}
 					/>
 				))
 			)}
-			{!request.loading && !request.error && <AddExpense />}
+			{!request.loading && !request.error && month === moment().format('M') && (
+				<AddExpense />
+			)}
 		</ul>
 	);
 };

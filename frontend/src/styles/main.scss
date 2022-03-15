@@ -191,6 +191,40 @@ header {
 		}
 	}
 }
+.months {
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: #0000006b;
+	height: 100%;
+	width: 100%;
+	display: grid;
+	place-content: center;
+	ul {
+		list-style: none;
+		background: white;
+		padding: 12px;
+		min-width: 450px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		li {
+			text-align: center;
+			background: #777e8f;
+			min-width: 30%;
+			cursor: pointer;
+			padding: 12px;
+			color: white;
+			border: 3px solid transparent;
+			transition: 0.3s;
+			&:hover {
+				border-color: $black;
+			}
+		}
+	}
+}
+
 .error {
 	margin: 10px 0;
 	background: #ffebf0;
@@ -221,6 +255,16 @@ header {
 		justify-content: space-between;
 		h1 {
 			margin: 0;
+		}
+	}
+	.months {
+		ul {
+			margin: 10px;
+			min-width: auto;
+			li {
+				min-width: 100%;
+				margin: 5px 0;
+			}
 		}
 	}
 	.add {

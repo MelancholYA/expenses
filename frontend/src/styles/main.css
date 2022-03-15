@@ -288,6 +288,52 @@ header button:hover::before {
   color: rgba(255, 255, 255, 0.774);
 }
 
+.months {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #0000006b;
+  height: 100%;
+  width: 100%;
+  display: -ms-grid;
+  display: grid;
+  place-content: center;
+}
+
+.months ul {
+  list-style: none;
+  background: white;
+  padding: 12px;
+  min-width: 450px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}
+
+.months ul li {
+  text-align: center;
+  background: #777e8f;
+  min-width: 30%;
+  cursor: pointer;
+  padding: 12px;
+  color: white;
+  border: 3px solid transparent;
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.months ul li:hover {
+  border-color: #14213d;
+}
+
 .error {
   margin: 10px 0;
   background: #ffebf0;
@@ -333,6 +379,14 @@ header button:hover::before {
   }
   header h1 {
     margin: 0;
+  }
+  .months ul {
+    margin: 10px;
+    min-width: auto;
+  }
+  .months ul li {
+    min-width: 100%;
+    margin: 5px 0;
   }
   .add {
     -ms-flex-wrap: wrap;

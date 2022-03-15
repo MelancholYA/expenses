@@ -18,7 +18,6 @@ const DayExpense = ({ date, amount }) => {
 			},
 		})
 			.then((res) => {
-				console.log(res);
 				setRequest((prev) => ({
 					...prev,
 					loading: false,
@@ -46,7 +45,13 @@ const DayExpense = ({ date, amount }) => {
 				className={`${date ? 'dayHeader' : ''}`}
 				onClick={() => {
 					setExpend(!expend);
-					(request.loading || request.error) && getTotals();
+					if (
+						moment(date).isSame(moment(), 'day') ||
+						request.loading ||
+						request.error
+					) {
+						getTotals();
+					}
 				}}>
 				<span>
 					{moment(date).isSame(moment(), 'day')

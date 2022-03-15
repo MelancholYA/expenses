@@ -1,14 +1,16 @@
 import axios from 'axios';
 import { useState } from 'react';
-import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { addAmount } from '../redux/expensesSlice';
 
-const AddExpense = ({ setRequest }) => {
+const AddExpense = () => {
 	const [newExpense, setNewExpense] = useState({
 		description: '',
 		amount: 0,
 	});
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const dispatch = useDispatch();
 
 	const add = async () => {
 		if (!newExpense.amount) {
@@ -25,16 +27,12 @@ const AddExpense = ({ setRequest }) => {
 				},
 			})
 			.then((res) => {
-				//todo add result to array
 				setError(null);
-				console.log(res);
-				setRequest((prev) =>
-					prev.map((item) =>
-						moment(item._id).isSame(moment(), 'day')
-							? item.amount + res.data.amount
-							: item,
-					),
-				);
+				dispatch(addAmount(res.data.amount));
+				setNewExpense({
+					description: '',
+					amount: '',
+				});
 			})
 			.catch((err) => {
 				setError(err.response ? err.response.data?.message : err.message);

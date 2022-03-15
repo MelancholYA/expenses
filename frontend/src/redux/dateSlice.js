@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import moment from 'moment';
 
 const initialState = {
-	month: moment().format('MM'),
+	month: moment().format('M'),
 	day: moment().format('DD'),
 	year: moment().format('YYYY'),
 };
@@ -11,13 +11,13 @@ export const dateSlice = createSlice({
 	name: 'date',
 	initialState,
 	reducers: {
-		setDate: (state, action) => {
-			state = action.payload;
+		setMonth: (state, action) => {
+			state.month = action.payload;
 		},
 	},
 });
 
 // Action creators are generated for each case reducer function
-export const { setDate } = dateSlice.actions;
+export const { setMonth } = dateSlice.actions;
 
 export default dateSlice.reducer;
